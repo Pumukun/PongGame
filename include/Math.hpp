@@ -14,10 +14,7 @@ public:
 
 	~Vector2f() = default;
 
-	void setX(float p_x) { x = p_x; }
-	void setY(float p_y) { y = p_y; }
+	void setX(float p_x);
+	void setY(float p_y);
 
-	void print() {
-		cout << x << ", " << y << endl;
-	}
-};
+	void print();};
