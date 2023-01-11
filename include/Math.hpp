@@ -17,4 +17,5 @@ public:
 	void setX(float p_x);
 	void setY(float p_y);
 
-	void print();};
+	void print();
+};

@@ -12,6 +12,7 @@
 
 using namespace std;
 
+// Ball Movement logic
 void ballMovement(Ball &p_ball, bool CollisionCond1, bool CollisionCond2, int WallCol) {
 	float vel = p_ball.getVelocity();
 	float b_x = p_ball.getX();
@@ -45,15 +46,15 @@ void ballMovement(Ball &p_ball, bool CollisionCond1, bool CollisionCond2, int Wa
 	}
 }
 
+// Collision with walls
 int WallCollision(Ball &p_ball) {
-	// Collision with walls
 	if (p_ball.getY() <= 0) return 1;
 	if (p_ball.getY() + 16 >= 256) return 2;
 	return 0;
 }
 
+// Collision with player
 bool collisionCheck(Ball &p_ball, Entity &p_entity) {
-	// Collision with player
 	if (p_entity.getPosition().x > 256) {
 		if (p_ball.getX() + 16 >= p_entity.getPosition().x && (p_ball.getY() >= p_entity.getPosition().y && p_ball.getY() <= p_entity.getPosition().y + 64 - 16))
 			return true;
@@ -64,6 +65,7 @@ bool collisionCheck(Ball &p_ball, Entity &p_entity) {
 	return false;
 }
 
+// Players position
 void PlayersPositionCheck(Entity &Player1, Entity &Player2, float &player1_vel, float &player2_vel) {
 	Player1.setPosY(Player1.getPosition().y + player1_vel);
 	Player2.setPosY(Player2.getPosition().y + player2_vel);
@@ -93,6 +95,7 @@ void PlayersPositionCheck(Entity &Player1, Entity &Player2, float &player1_vel, 
 	if (player2_vel < -2) player2_vel = -2;
 }
 
+// Score Counter
 int score_cnt1 = 0;
 int score_cnt2 = 0;
 
@@ -111,8 +114,6 @@ void ScoreCounter(Ball &p_ball, Entity &p_player1, Entity &p_player2, vector<SDL
 		p_player1.setPosY(96);
 		p_player2.setPosY(96);
 
-		cout << score_cnt1 << ", " << score_cnt2 << endl;
-
 		ldig1.setTexture(p_digits[score_cnt1 / 10]);
 		ldig2.setTexture(p_digits[score_cnt1 % 10]);
 
@@ -130,17 +131,17 @@ void ScoreCounter(Ball &p_ball, Entity &p_player1, Entity &p_player2, vector<SDL
 
 int main(int argc, char* args[]) {
 
-	// Инициализация библиотеки SDL и проверка все ли норм
+	// SDL init
 	if (SDL_Init(SDL_INIT_VIDEO) > 0) 
 		cout << "SDL_Init HAS FAILED. SDL_ERROR: " << SDL_GetError() << endl;
 	if (!IMG_Init(IMG_INIT_PNG))
 		cout << "IMG_INIT HAS FAILED. ERROR: " << SDL_GetError() << endl;
 
-	// Инициализация окна
+	// Window init
 	RenderWindow window("game v1.0", 512, 256); 
 
 
-	// Загрузка текстур
+	// Textures
 	SDL_Texture* rackTexture = window.loadTexture("res/gfx/racket.png");
 	SDL_Texture* ballTexture = window.loadTexture("res/gfx/ball.png");
 
@@ -157,6 +158,7 @@ int main(int argc, char* args[]) {
 
 	vector<SDL_Texture*> digits = {digit0, digit1, digit2, digit3, digit4, digit5, digit6, digit7, digit8, digit9};
 
+	// Creating Entities
 	Entity LeftDigit1({96, 10}, digits[0], 16, 16);
 	Entity LeftDigit2({96 + 18, 10}, digits[0], 16, 16);
 	Entity RightDigit1({512 - 96, 10}, digits[0], 16, 16);
@@ -171,13 +173,14 @@ int main(int argc, char* args[]) {
 	bool gameRunning = true;
 	SDL_Event event;
 
+	// Variables needed for optimization
 	const float timeStep = 0.01f;
-	float accumulator = 0.0f; // Обновления экрана, каждый раз когда заполнится аккумулятор
+	float accumulator = 0.0f;
 	float currentTime = utils::hireTimeInSeconds();
 
-	float player1_vel = 0, player2_vel = 0;
+	float player1_vel = 0, player2_vel = 0;		// Players velocity
 
-	// main game loop
+	// Main game loop
 	while (gameRunning) {
 		int startTicks = SDL_GetTicks();
 
@@ -185,7 +188,6 @@ int main(int argc, char* args[]) {
 		float frameTime = newTime - currentTime;
 
 		currentTime = newTime;
-
 		accumulator += frameTime;
 
 		while (accumulator >= timeStep) {
@@ -194,9 +196,9 @@ int main(int argc, char* args[]) {
 					gameRunning = false;
 
 				switch(event.type) {
-            	/* Look for a keypress */
+            	// Look for a keypress
             	case SDL_KEYDOWN:
-                	/* Check the SDLKey values and move change the coords */
+                	// Check the SDLKey values and move change the coords
                 	switch(event.key.keysym.sym) {
                     case SDLK_UP:
                         player2_vel -= 2;
@@ -250,7 +252,7 @@ int main(int argc, char* args[]) {
 			accumulator -= timeStep;
 		}
 
-		// Texture display
+		// Texture render and display
 		window.clear();
 
 		window.render(Player1);
