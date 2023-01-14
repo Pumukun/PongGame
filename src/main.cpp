@@ -156,6 +156,8 @@ int main(int argc, char* args[]) {
 	SDL_Texture* digit8 = window.loadTexture("res/gfx/8_dig.png");
 	SDL_Texture* digit9 = window.loadTexture("res/gfx/9_dig.png");
 
+	SDL_Texture* netTexture = window.loadTexture("res/gfx/net.png");
+
 	vector<SDL_Texture*> digits = {digit0, digit1, digit2, digit3, digit4, digit5, digit6, digit7, digit8, digit9};
 
 	// Creating Entities
@@ -166,6 +168,8 @@ int main(int argc, char* args[]) {
 
 	Entity Player1({10, 96}, rackTexture, 16, 64);
 	Entity Player2({486, 96}, rackTexture, 16, 64);
+
+	Entity Net({254, 8}, netTexture, 4, 256);
 
 	Ball ball({256, 128}, ballTexture);
 
@@ -263,6 +267,8 @@ int main(int argc, char* args[]) {
 		window.render(LeftDigit2);
 		window.render(RightDigit1);
 		window.render(RightDigit2);
+
+		window.render(Net);
 
 		window.display();
 
